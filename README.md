@@ -1,43 +1,43 @@
 # openclaw-docs
 
-Этот репозиторий собирает документацию OpenClaw в один мастер-файл для загрузки в **NotebookLM**.
+This repository aggregates OpenClaw documentation into a single master file for **NotebookLM** ingestion.
 
-## Что здесь происходит
+## What this repository does
 
-- Источник документации: локальная папка OpenClaw `docs`
+- Documentation source: local OpenClaw `docs` directory
   - `/var/lib/openclaw/.npm-global/lib/node_modules/openclaw/docs`
-- Генератор: `scripts/build-master-docs.py`
-- Результат: `MASTER_DOCS.md`
-- Исключения из сборки: папки `zh-cn` и `ja-jp`
+- Builder script: `scripts/build-master-docs.py`
+- Output file: `MASTER_DOCS.md`
+- Excluded directories: `zh-cn` and `ja-jp`
 
-Во время сборки каждый markdown-файл из `docs` и подпапок добавляется в `MASTER_DOCS.md` отдельным блоком:
-- подзаголовок `## <имя_файла.md>`
-- строка с источником `_Source: <relative/path.md>_`
+During build, each markdown file from `docs` (including subfolders) is appended to `MASTER_DOCS.md` as a separate section with:
+- a heading: `## <filename.md>`
+- a source line: `_Source: <relative/path.md>_`
 
-## Версионирование OpenClaw
+## OpenClaw version tracking
 
-- Текущая обработанная версия хранится в `OPENCLAW_VERSION.txt`.
-- Это нужно, чтобы понимать, когда документация устарела относительно установленного OpenClaw.
+- The currently processed OpenClaw version is stored in `OPENCLAW_VERSION.txt`.
+- This is used to detect when docs need to be rebuilt after OpenClaw updates.
 
-## Еженедельное автообновление
+## Weekly auto-refresh
 
-Скрипт: `scripts/weekly-refresh.sh`
+Script: `scripts/weekly-refresh.sh`
 
-Логика:
-1. Проверяет `openclaw --version`.
-2. Сравнивает с версией в `OPENCLAW_VERSION.txt`.
-3. Если версия выше:
-   - пересобирает `MASTER_DOCS.md`,
-   - обновляет `OPENCLAW_VERSION.txt`,
-   - коммитит изменения,
-   - пушит в `origin/main`.
+Flow:
+1. Read current `openclaw --version`.
+2. Compare it with `OPENCLAW_VERSION.txt`.
+3. If the current version is newer:
+   - rebuild `MASTER_DOCS.md`,
+   - update `OPENCLAW_VERSION.txt`,
+   - commit changes,
+   - push to `origin/main`.
 
-Cron (понедельник, 12:00 UTC):
+Cron schedule (Monday, 12:00 UTC):
 
 ```cron
 0 12 * * 1 /var/lib/openclaw/.openclaw/workspace/projects/openclaw-docs/scripts/weekly-refresh.sh >> /var/lib/openclaw/.openclaw/workspace/projects/openclaw-docs/weekly-refresh.log 2>&1
 ```
 
-## Зачем это сделано
+## Why this exists
 
-Основная цель — поддерживать один актуальный мастер-файл документации, который удобно загружать в **NotebookLM** для поиска, Q&A и контекстной работы с докой.
+The goal is to keep one up-to-date master documentation file that is easy to upload into **NotebookLM** for search, Q&A, and context-aware doc workflows.
